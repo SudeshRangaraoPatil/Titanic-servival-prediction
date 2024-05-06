@@ -1,0 +1,24 @@
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+
+num_imputer = SimpleImputer(strategy="median")
+df["Age"] = num_imputer.fit_transform(df[["Age"]])
+df["Fare"] = num_imputer.fit_transform(df[["Fare"]])
+
+cat_imputer = SimpleImputer(strategy="most_frequent")
+imputed_embarked = cat_imputer.fit_transform(df[["Embarked"]])
+df["Embarked"] = pd.Series(imputed_embarked.flatten(), name="Embarked")
+
+label_encoder = LabelEncoder()
+for c in df_obj.columns:
+    df[c] = label_encoder.fit_transform(df[c])
+
+scaler = StandardScaler()
+df[["Age", "Fare"]] = scaler.fit_transform(df[["Age", "Fare"]])
+
+X = df.drop("Survived", axis=1)
+y = df["Survived"]
+
+# Splitting data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
